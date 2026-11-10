@@ -37,13 +37,13 @@ export function OpeningSequence({ onDone }: { onDone: () => void }) {
       <p className="sr-only" aria-live="assertive">Opening your box…</p>
       <div className="relative flex h-72 w-72 items-center justify-center">
         <motion.div className="absolute inset-0 rounded-full bg-gold blur-3xl"
-          animate={{ opacity: reduce ? 0.3 : [0, 0, 0.25, 0.6][stage], scale: [0.4, 0.5, 0.9, 1.4][stage] }}
+          animate={{ opacity: reduce ? 0.3 : [0, 0, 0.25, 0.6][stage] ?? 0, scale: [0.4, 0.5, 0.9, 1.4][stage] ?? 1 }}
           transition={{ duration: 0.5 }} />
         <motion.div
           animate={stage === 0 && !reduce ? { x: [0, -6, 6, -5, 5, -3, 3, 0], rotate: [0, -2, 2, -2, 2, 0] } : stage === 1 ? { x: [0, -2, 2, 0], scale: 1.04 } : { scale: 1.06 }}
           transition={{ duration: stage === 0 ? 0.6 : 0.4, repeat: stage === 1 ? 2 : 0 }}
           className="relative w-60">
-          <MysteryBox open={stage >= 2 || !!reduce} glow={reduce ? 0.6 : [0, 0.4, 0.9, 1][stage]} className="w-full" />
+          <MysteryBox open={stage >= 2 || !!reduce} glow={reduce ? 0.6 : [0, 0.4, 0.9, 1][stage] ?? 0} className="w-full" />
         </motion.div>
         <AnimatePresence>
           {stage === 3 && Array.from({ length: 28 }).map((_, i) => {

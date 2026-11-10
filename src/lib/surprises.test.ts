@@ -19,7 +19,7 @@ describe("surprise engine", () => {
     const hits = new Set<string>();
     for (let i = 0; i < n; i++) hits.add(pickSurprise(SURPRISES, () => (i + 0.5) / n)!.id);
     expect(hits.size).toBe(n);
-    expect(pickSurprise(SURPRISES, () => 0.9999999)!.id).toBe(SURPRISES[n - 1].id);
+    expect(pickSurprise(SURPRISES, () => 0.9999999)!.id).toBe(SURPRISES[n - 1]!.id);
   });
 
   it("is roughly uniform and allows repeats", () => {
@@ -36,6 +36,6 @@ describe("surprise engine", () => {
 
   it("skips invalid entries", () => {
     const s = pickSurprise([{ bad: true }, SURPRISES[0]], () => 0.99);
-    expect(s?.id).toBe(SURPRISES[0].id);
+    expect(s?.id).toBe(SURPRISES[0]!.id);
   });
 });

@@ -16,10 +16,10 @@ export const SURPRISE_ICON: Record<string, LucideIcon> = {
   creature: Eye, button: MousePointerClick, door: DoorOpen, planet: Globe2, sound: Volume2,
 };
 
-const pick = <T,>(arr: T[], not?: T) => {
+const pick = <T,>(arr: T[], not?: T): T => {
   let v = arr[Math.floor(Math.random() * arr.length)];
   if (arr.length > 1) while (v === not) v = arr[Math.floor(Math.random() * arr.length)];
-  return v;
+  return v as T;
 };
 
 function Stage({ children, className = "" }: { children: ReactNode; className?: string }) {
@@ -44,7 +44,7 @@ const POWERS = [
   "You can make any cup of tea exactly lukewarm.",
 ];
 function Superpower() {
-  const [p, setP] = useState(POWERS[0]);
+  const [p, setP] = useState<string>(POWERS[0]!);
   return (
     <Stage className="flex-col gap-6 p-8 text-center">
       <Zap className="h-14 w-14 text-gold" aria-hidden />
@@ -105,7 +105,7 @@ function Potato() {
     <Stage className="flex-col gap-4">
       <button aria-label="Change the potato's dance move" onClick={() => { play("pop"); setM((m + 1) % MOVES.length); }} className="rounded-full">
         <motion.svg viewBox="0 0 120 140" className="h-52 w-44" key={m}
-          animate={reduce ? undefined : MOVES[m]} transition={{ duration: 0.9, repeat: Infinity, ease: "easeInOut" }}>
+          animate={reduce ? {} : MOVES[m] ?? {}} transition={{ duration: 0.9, repeat: Infinity, ease: "easeInOut" }}>
           <ellipse cx="60" cy="70" rx="44" ry="58" fill="var(--gold-deep)" />
           <circle cx="40" cy="50" r="3" fill="var(--box-side)" opacity=".5" /><circle cx="78" cy="96" r="4" fill="var(--box-side)" opacity=".5" />
           <circle cx="46" cy="62" r="7" fill="var(--foreground)" /><circle cx="74" cy="62" r="7" fill="var(--foreground)" />
@@ -120,7 +120,7 @@ function Potato() {
   );
 }
 
-const QA = [
+const QA: [string, string][] = [
   ["Why is the sky blue?", "Because it saw the sea first and didn't want to clash."],
   ["What's the meaning of life?", "Snacks. It has always been snacks."],
   ["Where do socks go?", "A small, thriving sock nation behind your washing machine."],
@@ -132,8 +132,8 @@ function Answer() {
   const [shown, setShown] = useState(false);
   return (
     <Stage className="flex-col gap-5 p-8 text-center">
-      <p className="font-display text-3xl">{QA[i][0]}</p>
-      <p aria-live="polite" className={`min-h-16 text-gold transition-opacity ${shown ? "opacity-100" : "opacity-0"}`}>{shown ? QA[i][1] : ""}</p>
+      <p className="font-display text-3xl">{QA[i]![0]}</p>
+      <p aria-live="polite" className={`min-h-16 text-gold transition-opacity ${shown ? "opacity-100" : "opacity-0"}`}>{shown ? QA[i]![1] : ""}</p>
       {shown
         ? <button className={btn} onClick={() => { setI((i + 1) % QA.length); setShown(false); }}>Ask another</button>
         : <button className={btn} onClick={() => { play("pop"); setShown(true); }}>Reveal the answer</button>}
@@ -266,7 +266,7 @@ function Illusion() {
     <Stage className="bg-foreground p-0">
       <svg viewBox={`0 0 ${cols * 20} ${rows * 20}`} className="h-full w-full" role="img" aria-label="Café wall illusion: rows of offset tiles that look tilted but are perfectly parallel">
         {Array.from({ length: rows }).map((_, r) => {
-          const off = [0, 5, 10, 5][r % 4];
+          const off = [0, 5, 10, 5][r % 4] ?? 0;
           return (
             <g key={r}>
               {Array.from({ length: cols + 1 }).map((_, c) => c % 2 === 0 && (
@@ -343,7 +343,7 @@ function Backwards() {
 /* ---------- Wholesome ---------- */
 const REMINDERS = ["Drink a glass of water.", "Unclench your jaw. Drop your shoulders.", "You're allowed to rest.", "Text someone you miss.", "Look at something far away for 20 seconds.", "You've survived every hard day so far."];
 function Reminder() {
-  const [r, setR] = useState(REMINDERS[0]);
+  const [r, setR] = useState<string>(REMINDERS[0]!);
   return (
     <Stage className="flex-col gap-6 p-8 text-center">
       <Heart className="h-10 w-10 text-gold" aria-hidden />
@@ -393,7 +393,7 @@ function Letter() {
 
 const FORTUNES = ["A small win is closer than you think.", "Someone will laugh at your joke this week. Genuinely.", "A good surprise is already on its way.", "Tomorrow's coffee will be excellent.", "An old idea of yours is about to make sense."];
 function Fortune() {
-  const [f, setF] = useState(FORTUNES[0]);
+  const [f, setF] = useState<string>(FORTUNES[0]!);
   return (
     <Stage className="flex-col gap-6 p-8 text-center">
       <Sun className="animate-spin-slow h-16 w-16 text-gold" aria-hidden />
@@ -420,13 +420,13 @@ function Pocket() {
 }
 
 /* ---------- Weird ---------- */
-const GUESSES = [["A cat?", "It purred. Then it beeped. Then it apologised."], ["A cloud?", "It rained, briefly, on itself. Inconclusive."], ["A potato?", "It looks offended. Different box, apparently."], ["A friend?", "It blinked twice. We think that means yes."]];
+const GUESSES: [string, string][] = [["A cat?", "It purred. Then it beeped. Then it apologised."], ["A cloud?", "It rained, briefly, on itself. Inconclusive."], ["A potato?", "It looks offended. Different box, apparently."], ["A friend?", "It blinked twice. We think that means yes."]];
 function Creature() {
   const [g, setG] = useState<number | null>(null);
   const reduce = useReducedMotion();
   return (
     <Stage className="flex-col gap-4 p-6">
-      <motion.svg viewBox="0 0 120 100" className="h-36 w-44" animate={reduce ? undefined : { y: [0, -6, 0] }} transition={{ repeat: Infinity, duration: 2 }} aria-hidden>
+      <motion.svg viewBox="0 0 120 100" className="h-36 w-44" animate={reduce ? {} : { y: [0, -6, 0] }} transition={{ repeat: Infinity, duration: 2 }} aria-hidden>
         <path d="M15 85 Q10 30 60 25 Q110 30 105 85 Z" fill="var(--gold-deep)" />
         <path d="M30 28 L22 5 M90 28 L100 8" stroke="var(--gold)" strokeWidth="3" />
         <circle cx="38" cy="55" r="12" fill="var(--foreground)" /><circle cx="70" cy="50" r="7" fill="var(--foreground)" /><circle cx="88" cy="62" r="5" fill="var(--foreground)" />
@@ -436,7 +436,7 @@ function Creature() {
       <div className="grid grid-cols-2 gap-2">
         {GUESSES.map(([q], i) => <button key={q} className="min-h-11 rounded-xl border border-border px-3 text-sm hover:border-gold" onClick={() => setG(i)}>{q}</button>)}
       </div>
-      <p aria-live="polite" className="min-h-10 text-center text-sm text-gold">{g !== null ? GUESSES[g][1] : ""}</p>
+      <p aria-live="polite" className="min-h-10 text-center text-sm text-gold">{g !== null ? GUESSES[g]![1] : ""}</p>
     </Stage>
   );
 }

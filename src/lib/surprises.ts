@@ -105,7 +105,7 @@ export const SURPRISES: Surprise[] = [
 
 export function isValidSurprise(s: unknown): s is Surprise {
   if (!s || typeof s !== "object") return false;
-  const x = s as Record<string, unknown>;
+  const x = s as Partial<Record<keyof Surprise, unknown>>;
   return (
     typeof x.id === "string" && x.id.length > 0 &&
     typeof x.title === "string" && x.title.length > 0 &&
@@ -137,7 +137,7 @@ export function pickSurprise(list: readonly unknown[] = SURPRISES, rng: () => nu
   const valid = validateCollection(list);
   if (valid.length === 0) return null;
   const i = Math.min(Math.floor(rng() * valid.length), valid.length - 1);
-  return valid[i];
+  return valid[i] ?? null;
 }
 
 export function getSurprise(id: string): Surprise | undefined {
